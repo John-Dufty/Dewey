@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<p style="text-align: right;">
+    <a href="https://github.com/John-Dufty/SUS" target="_blank" style="color: black;">GitHub</a> | 
+    <a href="https://www.linkedin.com/in/john-dufty/" target="_blank" style="color: black;">LinkedIn</a>
+</p>
+    <div class="container">
+        <div id="header">
+        </div>
+        <pre id="pre">
+██████╗ ███████╗██╗    ██╗███████╗██╗   ██╗
+██╔══██╗██╔════╝██║    ██║██╔════╝╚██╗ ██╔╝
+██║  ██║█████╗  ██║ █╗ ██║█████╗   ╚████╔╝ 
+██║  ██║██╔══╝  ██║███╗██║██╔══╝    ╚██╔╝  
+██████╔╝███████╗╚███╔███╔╝███████╗   ██║   
+ ╚═════╝ ╚══════╝ ╚══╝╚══╝ ╚══════╝   ╚═╝     
+        </pre>
+        <p style="text-align:center; font-family: 'Courier New', monospace;">Automated AIDR platform providing computed KQL Playbooks</p>
+        <div id="action_buttons">
+            <a id="setup_guide" class="button half-width-button" target="_blank" style="font-family: 'Courier New', monospace;">Setup Guide</a>
+            <a id="user_guide" class="button half-width-button" target="_blank" style="font-family: 'Courier New', monospace;">User Guide</a>
+            <a id="donate" class="button half-width-button" target="_blank" style="font-family: 'Courier New', monospace;">Donate</a>
+            <a id="options" class="button half-width-button" style="font-family: 'Courier New', monospace;">Options</a>
+            <div id="wrapper" style="display: none;">
+                <div id="api_key_wrapper">
+                    <label for="apiKey" style="font-family: 'Courier New', monospace;">API Key:</label>
+                    <input type="password" id="apiKey" placeholder="API key" style="font-family: 'Courier New', monospace;" />
+                    <button id="toggle_visibility" class="button" style="font-family: 'Courier New', monospace;">Show/Hide</button>
+                    <button id="submit" class="button" style="font-family: 'Courier New', monospace;">Save</button>
+                </div>
+            </div>
+            <div id="sampleText" style="display: none; font-family: 'Courier New', monospace;"></div>
+        </div>
+        <div id="bottom_text" style="font-family: 'Courier New', monospace;">
+
+        </div>
+        <script src="popup.js"></script>
+    </div>
+</body>
+</html>
