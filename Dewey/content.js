@@ -16,7 +16,14 @@ async function getChatGptResponse() {
   console.log('Sending API request');
   const promptElement = document.querySelector('.fxs-blade-title-titleText.msportalfx-tooltip-overflow');
   const bladeTitleText = promptElement ? promptElement.innerText : '';
-  const prompt = `Only respond with a single complex KQL queries to analyze ${bladeTitleText}. Response must be less then 15 lines long, do not include anything other then a description of the KQL query and the KQL query.`;
+
+  // If bladeTitleText is empty, no element was detected
+  if (bladeTitleText === '') {
+    console.log("No element detected.");
+    return "No element detected"; 
+  }
+
+  const prompt = `Only respond with a single complex KQL queries to analyze ${bladeTitleText}. Response must be less than 15 lines long, do not include anything other than a description of the KQL query and the KQL query.`;
 
   let apiKey = ''; // Initialize apiKey
 
@@ -56,24 +63,31 @@ async function getChatGptResponse() {
 function generateResponseAndUpdateOverlay() {
   console.log('Generating response');
 
+  overlayContent.innerHTML = '';
+
   const loadingText = document.createElement('div');
   loadingText.id = 'overlay-loading';
   loadingText.innerText = 'Loading...';
-  overlayContent.innerHTML = '';
   overlayContent.appendChild(loadingText);
 
   try {
     // Make the API request to ChatGPT
     getChatGptResponse().then(response => {
       console.log('API response:', response);
+      
+      // If there's no element detected, just display the message
+      if(response === "No element detected") {
+          overlayContent.innerHTML = response;
+          return;
+      }
 
-const asciiArtDiv = document.createElement('pre');
-asciiArtDiv.style.textAlign = 'center';
-asciiArtDiv.textContent = ASCII_ART;
+      const asciiArtDiv = document.createElement('pre');
+      asciiArtDiv.style.textAlign = 'center';
+      asciiArtDiv.textContent = ASCII_ART;
 
       const responseDiv = document.createElement('div');
-      responseDiv.style.textAlign = 'left';
-      responseDiv.innerHTML = `<pre style="white-space: pre-wrap">${response}</pre>`; 
+      responseDiv.id = 'response-div';
+      responseDiv.innerHTML = `<pre style="white-space: pre-wrap">${response}</pre>`;
 
       overlayContent.innerHTML = '';
       overlayContent.appendChild(asciiArtDiv);
@@ -97,6 +111,17 @@ function hideOverlay() {
 function showOverlay() {
   if (overlay) {
     overlay.style.display = 'block';
+  }
+}
+
+function adjustOverlaySize() {
+  if (overlay) {
+    const targetElement = document.querySelector('.fxs-blade.msportalfx-shadow-level3.fxs-portal-bg-txt-br.fxs-vivaresize.fxs-contextpane-content.fxs-blade-shows-pending.fxs-bladesize-xlarge');
+    if (targetElement) {
+      overlay.style.right = targetElement.offsetWidth + 'px';
+      overlay.style.width = 'calc(100% - ' + targetElement.offsetWidth + 'px)';
+      overlay.style.height = '100%';
+    }
   }
 }
 
@@ -142,29 +167,45 @@ function checkAndInjectOverlay() {
     #overlay {
       position: fixed;
       top: ${topbarElement.offsetHeight}px;
-      right: ${targetElement.offsetWidth}px; // set the overlay to the left of target element
-      width: calc(100% - ${targetElement.offsetWidth}px);
-      height: calc(100% - ${topbarElement.offsetHeight}px);
-      background-color: #fff;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 1);
       z-index: 9999;
       overflow: auto;
       padding: 20px;
     }
 
     #overlay-content {
-      width: 100%;
       max-height: 100%;
       display: flex;
-      flex-direction: column; // New addition: align children in a column
+      flex-direction: column;
       align-items: center;
-      justify-content: flex-start; // Changed from center to flex-start
+      justify-content: flex-start;
       overflow: auto;
-      text-align: center; // To center the text
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
     }
 
     #overlay-content pre {
-      white-space: pre-wrap; // To wrap the text
-      word-break: break-word; // To break the words at the end of the line
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    #overlay-loading {
+      font-size: 24px;
+      font-weight: bold;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #response-div {
+      width: 100%;
+      overflow: auto;
     }
   `;
 
@@ -192,6 +233,8 @@ function checkAndInjectOverlay() {
       hideOverlay();
       observer.disconnect(); // Disconnect the observer once the target element is removed
       overlayInjected = false; // Reset the overlayInjected flag
+    } else {
+      adjustOverlaySize(); // Adjust overlay size if target element still exists
     }
   });
   observer.observe(document.body, { childList: true, subtree: true });
